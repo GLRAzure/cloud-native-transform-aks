@@ -1,0 +1,43 @@
+#check resource provider registration
+namespace='Microsoft.ContainerService'
+if [ "$(az provider show --namespace ${namespace} | jq -r .registrationState)" != 'Registered' ]
+then
+      az provider register --namespace ${namespace} --verbose
+else
+      echo "Namespace \"${namespace}\" is already registered."
+fi
+
+## List Azure Regions
+az account list-locations
+
+version=$(az aks get-versions -l <location> --query 'orchestrators[-1].orchestratorVersion' -o tsv)
+echo $version
+
+az group create --name <resource group> --location <location>
+
+az aks create --resource-group <resource group> --name <clustername> --enable-addons monitoring --kubernetes-version $version --generate-ssh-keys --location <location>
+
+az acr create --resource-group <resource group> --name <acrname> --sku Standard --location <location>
+
+CLIENT_ID=$(az aks show --resource-group <resource group> --name <clustername> --query "servicePrincipalProfile.clientId" --output tsv)
+echo $CLIENT_ID
+
+ACR_ID=$(az acr show --name <acrname> --resource-group <resource group> --query "id" --output tsv)
+echo $ACR_ID
+
+az role assignment create --assignee $CLIENT_ID --role acrpull --scope $ACR_ID
+
+az sql server create -l <location> -g <resource group> -n <sqlservername> -u sqladmin -p P2ssw0rd1234
+
+az sql db create -g <resource group> -s <sqlservername> -n mhcdb --service-objective S0
+
+az aks get-credentials --resource-group <resource group> --name <clustername>
+
+kubectl get pods
+
+kubectl get service mhc-front --watch
+
+az ad sp delete --id $(az aks show -g <resource group> -n <clustername> --query servicePrincipalProfile.clientId -o tsv)
+
+
+
