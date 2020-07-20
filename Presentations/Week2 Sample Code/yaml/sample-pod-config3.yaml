@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sample-pod-config3
+spec:
+  containers:
+    - name: main
+      image: busybox
+      command: [ "/bin/sh", "-c", "cat /mnt/env/text.conf; sleep 3600" ]
+      volumeMounts:
+      - name: config-vol
+        mountPath: /mnt/env
+  volumes:
+  - name: config-vol
+    configMap:
+      name: sample-config
+

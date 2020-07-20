@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sample-deploy
+    team: dev-team
+  name: sample-deploy-svc
+  namespace: sample
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: sample-deploy
+  type: LoadBalancer

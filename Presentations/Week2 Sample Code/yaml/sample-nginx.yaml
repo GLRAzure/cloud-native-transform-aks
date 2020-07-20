@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: sample-nginx
+    team: marketing
+  name: sample-nginx
+spec:
+  containers:
+  - env:
+    - name: DATA
+      value: /var/data
+    image: nginx
+    name: sample-nginx
+    ports:
+    - containerPort: 80
+    livenessProbe:
+      httpGet:
+        path: /
+        port: 80
+      initialDelaySeconds: 5
+      periodSeconds: 5
