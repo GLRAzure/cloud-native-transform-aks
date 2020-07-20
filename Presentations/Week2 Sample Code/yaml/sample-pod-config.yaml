@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sample-pod-config
+spec:
+  containers:
+    - name: main
+      image: busybox
+      command: [ "/bin/sh", "-c", "env; sleep 3600" ]
+      env:
+        - name: DATA_DIR
+          valueFrom:
+            configMapKeyRef:
+              name: sample-config
+              key: data-vol
