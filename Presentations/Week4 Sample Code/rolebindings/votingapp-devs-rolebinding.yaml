@@ -1,0 +1,16 @@
+apiVersion: rbac.authorization.k8s.io/v1
+# This role binding allows "jane" to read pods in the "default" namespace.
+kind: RoleBinding
+metadata:
+  name: voting-devs-binding
+  namespace: voting
+  annotations:
+    fluxcd.io/ignore: "false"
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: "c3661a3d-6e42-4113-9e4d-34bb120d70d1" # Mark 8 Project Group
+roleRef:
+  kind: Role #this must be Role or ClusterRole
+  name: voting-user-role # this must match the name of the Role or ClusterRole you wish to bind to
+  apiGroup: rbac.authorization.k8s.io
