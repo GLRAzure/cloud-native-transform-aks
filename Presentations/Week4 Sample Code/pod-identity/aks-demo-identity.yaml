@@ -1,0 +1,8 @@
+apiVersion: "aadpodidentity.k8s.io/v1"
+kind: AzureIdentity
+metadata:
+  name: aks-demo-id
+spec:
+  type: 0 # 0=user assigned, 1=spn w/ secret, 2=spn w/cert
+  resourceID: /subscriptions/20cf04c2-2fb3-4a4e-aa15-ed5c6daaa8ec/resourcegroups/aks-demo-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/aks-demo-id
+  clientID: 2bb315e9-e29f-42b6-a594-028741a6ac85

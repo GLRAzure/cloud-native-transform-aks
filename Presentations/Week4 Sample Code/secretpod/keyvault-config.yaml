@@ -1,0 +1,7 @@
+apiVersion: v1
+data:
+  kvurl: https://aks-demo-aad-kv.vault.azure.net
+kind: ConfigMap
+metadata:
+  name: keyvault-info
+  namespace: secretpod

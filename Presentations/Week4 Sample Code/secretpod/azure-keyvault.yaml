@@ -1,0 +1,31 @@
+apiVersion: secrets-store.csi.x-k8s.io/v1alpha1
+kind: SecretProviderClass
+metadata:
+  name: secretpod-azure-kv-mount
+  namespace: secretpod
+spec:
+  provider: azure # accepted provider options: azure or vault
+  parameters:
+    usePodIdentity: "true" # [OPTIONAL for Azure] if not provided, will default to "false"
+    keyvaultName: "aks-demo-aad-kv" # the name of the KeyVault
+    objects: |
+      array:
+        - |
+          objectName: answer2everything
+          objectType: secret        # object types: secret, key or cert
+          objectVersion: ""         # [OPTIONAL] object versions, default to latest if empty
+        - |
+          objectName: favoriteFood
+          objectType: secret
+          objectVersion: ""
+        - |
+          objectName: dbConn
+          objectType: secret
+          objectVersion: ""
+        - |
+          objectName: loginCreds
+          objectType: secret
+          objectVersion: ""
+    resourceGroup: "aks-demo-rg" # the resource group of the KeyVault
+    subscriptionId: "20cf04c2-2fb3-4a4e-aa15-ed5c6daaa8ec" # the subscription ID of the KeyVault
+    tenantId: "72f988bf-86f1-41af-91ab-2d7cd011db47" # the tenant ID of the KeyVault

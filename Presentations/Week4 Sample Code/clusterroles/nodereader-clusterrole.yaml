@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  # "namespace" omitted since ClusterRoles are not namespaced
+  name: node-reader
+  annotations:
+    fluxcd.io/ignore: "false"
+rules:
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "watch", "list"]
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs: ["get", "list", "watch"]

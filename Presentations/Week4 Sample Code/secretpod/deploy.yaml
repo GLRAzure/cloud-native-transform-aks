@@ -1,0 +1,61 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secretpod-deploy
+  namespace: secretpod
+  annotations:
+    fluxcd.io/ignore: "false"
+    linkerd.io/inject: enabled
+    fluxcd.io/automated: "true"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: secretpod
+      env: blue
+  template:
+    metadata:
+      labels:
+        aadpodidbinding: demo-id
+        app: secretpod
+        env: blue
+    spec:
+      terminationGracePeriodSeconds: 5
+      volumes:
+        - name: secretpod-keyvault-secrets
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "secretpod-azure-kv-mount"
+        - name: keyvault-url
+          configMap:
+            name: keyvault-info
+      containers:
+        - name: secret-pod
+          image: agilewaysreg.azurecr.io/gitops/secretpod:18534
+          volumeMounts:
+            - mountPath: "/mnt/secrets"
+              name: secretpod-keyvault-secrets
+            - mountPath: "/mnt/data"
+              name: keyvault-url
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /_healthz
+              port: 80
+            initialDelaySeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /_healthz
+              port: 80
+            initialDelaySeconds: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
